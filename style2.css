@@ -20,6 +20,11 @@ a {
     text-decoration: none;
 }
 
+h1 {
+    font-weight: normal;
+    text-align: center;
+}
+
 .form-container {
     max-width: 420px;
     margin: auto;
@@ -372,7 +377,7 @@ button:focus {
     height: 50px;
     display: block;
     padding: 18px 20px 10px 20px;
-    border-bottom: 1px solid #aaa;
+    border-bottom: 0px solid #eee;
     cursor: pointer;
 }
 
@@ -388,7 +393,7 @@ button:focus {
     list-style: none;
     padding: 0;
     margin: auto;
-    max-height: 330px;
+    max-height: 300px;
     overflow-y: auto;
 }
 

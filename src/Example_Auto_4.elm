@@ -4,6 +4,8 @@ import Autocomplete
 import AutocompleteWrapper
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Svg
+import Svg.Attributes
 
 
 type alias Model =
@@ -67,7 +69,12 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div [ class "form-container" ]
-        [ div
+        [ div [ style [ ( "text-align", "center" ) ] ]
+            [ logoElm "100px" "100px"
+            , h1 [] [ text "Elm Autocomplete" ]
+            , p [] [ text "Examples" ]
+            ]
+        , div
             []
             [ AutocompleteWrapper.view model.field1 OriginMessage
             , AutocompleteWrapper.view model.field2 OriginMessage
@@ -199,3 +206,25 @@ menuItems3 =
     , "Red"
     , "Green"
     ]
+
+
+
+-- SVG
+-- blue #34485d
+
+
+logoElm : String -> String -> Html msg
+logoElm width height =
+    Svg.svg
+        [ Svg.Attributes.viewBox "0 0 323 323"
+        , Svg.Attributes.width width
+        , Svg.Attributes.height height
+        ]
+        [ Svg.path [ Svg.Attributes.fill "#F0AD00", Svg.Attributes.d "M162 153l70-70H92z" ] []
+        , Svg.path [ Svg.Attributes.fill "#F0AD00", Svg.Attributes.d "M162 153l70-70H92z" ] []
+        , Svg.path [ Svg.Attributes.fill "#7FD13B", Svg.Attributes.d "M9 0l70 70h153L162 0zm238 85l77 76-77 77-76-77z" ] []
+        , Svg.path [ Svg.Attributes.fill "#60B5CC", Svg.Attributes.d "M323 144V0H180z" ] []
+        , Svg.path [ Svg.Attributes.fill "#5A6378", Svg.Attributes.d "M153 162L0 9v305z" ] []
+        , Svg.path [ Svg.Attributes.fill "#F0AD00", Svg.Attributes.d "M256 247l67 67V179z" ] []
+        , Svg.path [ Svg.Attributes.fill "#60B5CC", Svg.Attributes.d "M162 171L9 323h305z" ] []
+        ]
