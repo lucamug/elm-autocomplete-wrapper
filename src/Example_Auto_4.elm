@@ -72,7 +72,12 @@ view model =
         [ div [ style [ ( "text-align", "center" ) ] ]
             [ logoElm "100px" "100px"
             , h1 [] [ text "Elm Autocomplete" ]
-            , p [] [ text "Examples" ]
+            , div []
+                [ a [ href "https://medium.com/@l.mugnaini/autocomplete-widget-in-elm-4927b8e275db" ] [ text "Article" ]
+                , text " ☀ "
+                , a [ href "https://github.com/lucamug/elm-autocomplete-wrapper" ] [ text "Code" ]
+                ]
+            , h2 [] [ text "Examples" ]
             ]
         , div
             []
@@ -80,6 +85,7 @@ view model =
             , AutocompleteWrapper.view model.field2 OriginMessage
             , AutocompleteWrapper.view model.field3 OriginMessage
             ]
+        , footer [] [ text "made with 凸 by ", a [ href "https://github.com/lucamug" ] [ text "lucamug" ] ]
         ]
 
 

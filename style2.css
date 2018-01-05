@@ -16,11 +16,14 @@ body {
 }
 
 a {
-    color: #888;
-    text-decoration: none;
-}
+    color: #5fb5cd;
 
-h1 {
+    /* text-decoration: none; */
+}
+footer {
+    color: #ccc;
+}
+h1, h2 {
     font-weight: normal;
     text-align: center;
 }
