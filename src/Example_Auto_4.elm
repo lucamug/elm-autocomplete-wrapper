@@ -76,6 +76,8 @@ view model =
                 [ a [ href "https://medium.com/@l.mugnaini/autocomplete-widget-in-elm-4927b8e275db" ] [ text "Article" ]
                 , text " ☀ "
                 , a [ href "https://github.com/lucamug/elm-autocomplete-wrapper" ] [ text "Code" ]
+                , text " ☀ "
+                , a [ href "http://guupa.com/elm-autocomplete-wrapper/Example_Auto_4.html" ] [ text "Examples" ]
                 ]
             , h2 [] [ text "Examples" ]
             ]
