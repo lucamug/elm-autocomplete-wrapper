@@ -35,24 +35,24 @@ update msg model =
         msgConverter : Msg -> ( String, AutocompleteWrapper.Msg )
         msgConverter msg =
             case msg of
-                OriginMessage fieldId autocomMsg ->
-                    ( fieldId, autocomMsg )
+                OriginMessage id autocomMsg ->
+                    ( id, autocomMsg )
     in
     case msg of
-        OriginMessage fieldId autocomMsg ->
-            if fieldId == model.field1.id then
+        OriginMessage id autocomMsg ->
+            if id == model.field1.id then
                 let
                     ( newModel, newMsg ) =
                         AutocompleteWrapper.update autocomMsg model.field1 OriginMessage msgConverter
                 in
                 { model | field1 = newModel } ! [ newMsg ]
-            else if fieldId == model.field2.id then
+            else if id == model.field2.id then
                 let
                     ( newModel, newMsg ) =
                         AutocompleteWrapper.update autocomMsg model.field2 OriginMessage msgConverter
                 in
                 { model | field2 = newModel } ! [ newMsg ]
-            else if fieldId == model.field3.id then
+            else if id == model.field3.id then
                 let
                     ( newModel, newMsg ) =
                         AutocompleteWrapper.update autocomMsg model.field3 OriginMessage msgConverter
@@ -70,7 +70,7 @@ view : Model -> Html Msg
 view model =
     div [ class "form-container" ]
         [ div [ style [ ( "text-align", "center" ) ] ]
-            [ logoElm "100px" "100px"
+            [ logoElm LightBlue "100px" "100px"
             , h1 [] [ text "Elm Autocomplete" ]
             , div []
                 [ a [ href "https://medium.com/@l.mugnaini/autocomplete-widget-in-elm-4927b8e275db" ] [ text "Article" ]
@@ -218,21 +218,92 @@ menuItems3 =
 
 
 -- SVG
--- blue #34485d
 
 
-logoElm : String -> String -> Html msg
-logoElm width height =
+type LogoColor
+    = Colored
+    | Orange
+    | Green
+    | LightBlue
+    | Blue
+    | White
+    | Black
+
+
+logoColor : LogoColor -> String
+logoColor color =
+    case color of
+        Orange ->
+            "#F0AD00"
+
+        Green ->
+            "#7FD13B"
+
+        LightBlue ->
+            "#60B5CC"
+
+        Blue ->
+            "#5A6378"
+
+        _ ->
+            "black"
+
+
+logoElm : LogoColor -> String -> String -> Html msg
+logoElm color x y =
+    let
+        f =
+            Svg.Attributes.fill
+
+        d =
+            Svg.Attributes.d
+
+        p =
+            Svg.path
+
+        orange =
+            logoColor Orange
+
+        green =
+            logoColor Green
+
+        lightBlue =
+            logoColor LightBlue
+
+        blue =
+            logoColor Blue
+
+        c =
+            case color of
+                Colored ->
+                    { c1 = orange, c2 = green, c3 = lightBlue, c4 = blue }
+
+                Orange ->
+                    { c1 = orange, c2 = orange, c3 = orange, c4 = orange }
+
+                Green ->
+                    { c1 = green, c2 = green, c3 = green, c4 = green }
+
+                LightBlue ->
+                    { c1 = lightBlue, c2 = lightBlue, c3 = lightBlue, c4 = lightBlue }
+
+                Blue ->
+                    { c1 = blue, c2 = blue, c3 = blue, c4 = blue }
+
+                White ->
+                    { c1 = "white", c2 = "white", c3 = "white", c4 = "white" }
+
+                Black ->
+                    { c1 = "black", c2 = "black", c3 = "black", c4 = "black" }
+    in
     Svg.svg
-        [ Svg.Attributes.viewBox "0 0 323 323"
-        , Svg.Attributes.width width
-        , Svg.Attributes.height height
+        [ Svg.Attributes.version "1"
+        , Svg.Attributes.viewBox "0 0 323 323"
+        , Svg.Attributes.width x
+        , Svg.Attributes.height y
         ]
-        [ Svg.path [ Svg.Attributes.fill "#F0AD00", Svg.Attributes.d "M162 153l70-70H92z" ] []
-        , Svg.path [ Svg.Attributes.fill "#F0AD00", Svg.Attributes.d "M162 153l70-70H92z" ] []
-        , Svg.path [ Svg.Attributes.fill "#7FD13B", Svg.Attributes.d "M9 0l70 70h153L162 0zm238 85l77 76-77 77-76-77z" ] []
-        , Svg.path [ Svg.Attributes.fill "#60B5CC", Svg.Attributes.d "M323 144V0H180z" ] []
-        , Svg.path [ Svg.Attributes.fill "#5A6378", Svg.Attributes.d "M153 162L0 9v305z" ] []
-        , Svg.path [ Svg.Attributes.fill "#F0AD00", Svg.Attributes.d "M256 247l67 67V179z" ] []
-        , Svg.path [ Svg.Attributes.fill "#60B5CC", Svg.Attributes.d "M162 171L9 323h305z" ] []
+        [ p [ f c.c1, d "M162 153l70-70H92zm94 94l67 67V179z" ] []
+        , p [ f c.c2, d "M9 0l70 70h153L162 0zm238 85l77 76-77 77-76-77z" ] []
+        , p [ f c.c3, d "M323 144V0H180zm-161 27L9 323h305z" ] []
+        , p [ f c.c4, d "M153 162L0 9v305z" ] []
         ]
