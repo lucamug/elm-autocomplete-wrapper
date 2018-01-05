@@ -23,9 +23,8 @@ a {
 .form-container {
     max-width: 420px;
     margin: auto;
-    background-color: #ddd;
-    padding: 30px;
-    box-shadow: inset 3px 3px 20px 10px #00000006;
+    background-color: white;
+    padding: 40px;
     position: relative;
 }
 
@@ -50,20 +49,21 @@ a {
 }
 
 input[type="text"], input[type="password"], input[type="date"] {
-    background-color: #eee;
-    box-shadow: 3px 3px 20px 10px #00000006;
-    font-size: 24px;
-    padding: 5px 10px;
-    border: 0px;
-    border-bottom: 2px solid orange;
+    height: 50px;
+    padding: 10px 20px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
     width: 100%;
-    margin-top: 6px
 }
 
 label {
     display: block;
     color: #888;
-    margin-bottom: 40px;
+    margin-bottom: 60px;
+    margin-top: 60px;
 }
 
 label.checkbox {
@@ -148,9 +148,14 @@ button.disabled {
 }
 
 input:focus, input.focus {
-    outline: #7ab4ff solid 2px;
+    outline: #7ab4ff solid 0px;
     outline-offset: 0px;
-    border-bottom: 2px solid transparent;
+    /* border-color: #7ab4ff; */
+}
+
+input.autocomplete-open {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 button:focus {
@@ -178,7 +183,7 @@ button:focus {
 
 .form-cover:before {
     content: '';
-    box-sizing: border-box;
+    box-sizing: borde-box;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -195,7 +200,7 @@ button:focus {
 .placeholder {
     position: absolute;
     top: 15px;
-    left: 10px;
+    left: 20px;
     pointer-events: none;
     font-size: 18px;
     transition: all 0.2s;
@@ -203,7 +208,7 @@ button:focus {
 }
 
 .placeholder.upperPosition {
-    top: -17px;
+    top: -24px;
     left: 0px;
     font-size: 15px;
     color: #888;
@@ -355,35 +360,35 @@ button:focus {
     position: absolute;
     left: 0;
     right: 0;
-    margin-top: 5px;
     background: white;
     color: black;
-    border: 1px solid #DDD;
-    border-radius: 3px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    min-width: 120px;
+    border: 1px solid #aaa;
+    border-top: 0px;
+    border-radius: 0 0 4px 4px;
+    min-width: 180px;
 }
 
 .autocomplete-item {
+    height: 50px;
     display: block;
-    padding: 5px 10px;
-    border-bottom: 1px solid #DDD;
+    padding: 18px 20px 10px 20px;
+    border-bottom: 1px solid #aaa;
     cursor: pointer;
 }
 
 .key-selected {
-    background-color: #afceff;
+    background-color: #ddd;
 }
 
 .mouse-selected {
-    background-color: #ececec;
+    background-color: #ddd;
 }
 
 .autocomplete-list {
     list-style: none;
     padding: 0;
     margin: auto;
-    max-height: 200px;
+    max-height: 330px;
     overflow-y: auto;
 }
 

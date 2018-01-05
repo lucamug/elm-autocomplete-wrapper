@@ -29,8 +29,9 @@ type alias MenuItem =
 
 
 type alias Model =
-    { fieldValue : String
-    , fieldId : String
+    { value : String
+    , id : String
+    , name : String
     , menuItems : List MenuItem
     , state : Autocomplete.State
     , howManyToShow : Int
@@ -42,10 +43,11 @@ type alias Model =
     }
 
 
-init : String -> List MenuItem -> Model
-init fieldId menuItems1 =
-    { fieldValue = ""
-    , fieldId = fieldId
+init : String -> String -> List MenuItem -> Model
+init id name menuItems1 =
+    { value = ""
+    , id = id
+    , name = name
     , menuItems = menuItems1
     , state = Autocomplete.empty
     , howManyToShow = 50
@@ -71,7 +73,7 @@ update msg model originMessage msgConverter =
                     not << List.isEmpty <| acceptableItems newQuery model.menuItems
             in
             { model
-                | fieldValue = newQuery
+                | value = newQuery
                 , showMenu = showMenu
                 , selectedMenuItem = Nothing
             }
@@ -83,7 +85,7 @@ update msg model originMessage msgConverter =
             else
                 let
                     ( newState, maybeMsg ) =
-                        Autocomplete.update (updateConfig model.fieldId originMessage) autoMsg model.howManyToShow model.state (acceptableItems model.fieldValue model.menuItems)
+                        Autocomplete.update (updateConfig model.id originMessage) autoMsg model.howManyToShow model.state (acceptableItems model.value model.menuItems)
 
                     newModel =
                         { model | state = newState }
@@ -94,7 +96,7 @@ update msg model originMessage msgConverter =
 
                     Just updateMsg ->
                         let
-                            ( fieldId, autocomMsg ) =
+                            ( id, autocomMsg ) =
                                 msgConverter updateMsg
                         in
                         update autocomMsg newModel originMessage msgConverter
@@ -107,14 +109,14 @@ update msg model originMessage msgConverter =
                 Nothing ->
                     if toTop then
                         { model
-                            | state = Autocomplete.resetToLastItem (updateConfig model.fieldId originMessage) (acceptableItems model.fieldValue model.menuItems) model.howManyToShow model.state
-                            , selectedMenuItem = List.head <| List.reverse <| List.take model.howManyToShow <| acceptableItems model.fieldValue model.menuItems
+                            | state = Autocomplete.resetToLastItem (updateConfig model.id originMessage) (acceptableItems model.value model.menuItems) model.howManyToShow model.state
+                            , selectedMenuItem = List.head <| List.reverse <| List.take model.howManyToShow <| acceptableItems model.value model.menuItems
                         }
                             ! []
                     else
                         { model
-                            | state = Autocomplete.resetToFirstItem (updateConfig model.fieldId originMessage) (acceptableItems model.fieldValue model.menuItems) model.howManyToShow model.state
-                            , selectedMenuItem = List.head <| List.take model.howManyToShow <| acceptableItems model.fieldValue model.menuItems
+                            | state = Autocomplete.resetToFirstItem (updateConfig model.id originMessage) (acceptableItems model.value model.menuItems) model.howManyToShow model.state
+                            , selectedMenuItem = List.head <| List.take model.howManyToShow <| acceptableItems model.value model.menuItems
                         }
                             ! []
 
@@ -137,7 +139,7 @@ update msg model originMessage msgConverter =
             in
             -- Giving the focus again (Dom.focus) because it was lost upon
             -- the click on the menu
-            ( newModel, Task.attempt (\_ -> originMessage model.fieldId NoOpAutocom) (Dom.focus model.fieldId) )
+            ( newModel, Task.attempt (\_ -> originMessage model.id NoOpAutocom) (Dom.focus model.id) )
 
         PreviewMenuItem id ->
             { model | selectedMenuItem = Just <| getMenuItemAtId model.menuItems id } ! []
@@ -145,7 +147,7 @@ update msg model originMessage msgConverter =
         HandleEscape ->
             let
                 validOptions =
-                    not <| List.isEmpty (acceptableItems model.fieldValue model.menuItems)
+                    not <| List.isEmpty (acceptableItems model.value model.menuItems)
 
                 handleEscape =
                     if validOptions then
@@ -159,7 +161,7 @@ update msg model originMessage msgConverter =
                 escapedModel =
                     case model.selectedMenuItem of
                         Just menuItem ->
-                            if model.fieldValue == menuItem then
+                            if model.value == menuItem then
                                 model
                                     |> resetInput
                             else
@@ -171,7 +173,7 @@ update msg model originMessage msgConverter =
             escapedModel ! []
 
         Reset ->
-            { model | state = Autocomplete.reset (updateConfig model.fieldId originMessage) model.state, selectedMenuItem = Nothing }
+            { model | state = Autocomplete.reset (updateConfig model.id originMessage) model.state, selectedMenuItem = Nothing }
                 ! []
 
         OnFocusAutocom ->
@@ -210,7 +212,7 @@ removeSelection model =
 
 resetInput : Model -> Model
 resetInput model =
-    { model | fieldValue = "" }
+    { model | value = "" }
         |> removeSelection
         |> resetMenu
 
@@ -225,16 +227,16 @@ getMenuItemAtId menuItems id =
 setQuery : Model -> String -> Model
 setQuery model id =
     { model
-        | fieldValue = getMenuItemAtId model.menuItems id
+        | value = getMenuItemAtId model.menuItems id
         , selectedMenuItem = Just <| getMenuItemAtId model.menuItems id
     }
 
 
 acceptableItems : String -> List String -> List String
-acceptableItems fieldValue menuItems =
+acceptableItems value menuItems =
     let
         lowerQuery =
-            String.toLower fieldValue
+            String.toLower value
     in
     List.filter (String.contains lowerQuery << String.toLower) menuItems
 
@@ -250,9 +252,9 @@ view model originMessage =
             Decode.map
                 (\code ->
                     if code == 38 || code == 40 then
-                        Ok (originMessage model.fieldId NoOpAutocom)
+                        Ok (originMessage model.id NoOpAutocom)
                     else if code == 27 then
-                        Ok (originMessage model.fieldId HandleEscape)
+                        Ok (originMessage model.id HandleEscape)
                     else
                         Err "not handling that key"
                 )
@@ -281,7 +283,7 @@ view model originMessage =
                     menuItem
 
                 Nothing ->
-                    model.fieldValue
+                    model.value
 
         activeDescendant attributes =
             case model.selectedMenuItem of
@@ -293,19 +295,27 @@ view model originMessage =
                 Nothing ->
                     attributes
     in
-    div [ style [ ( "position", "relative" ) ] ]
+    label [ style [ ( "position", "relative" ) ] ]
         (List.append
-            [ input
+            [ div
+                [ classList
+                    [ ( "placeholder", True )
+                    , ( "upperPosition", model.focus || fieldValue /= "" )
+                    ]
+                ]
+                [ text model.name ]
+            , input
                 (activeDescendant
                     [ type_ "text"
-                    , onInput (originMessage model.fieldId << SetQuery)
-                    , onFocus (originMessage model.fieldId OnFocusAutocom)
-                    , onBlur (originMessage model.fieldId OnBlurAutocom)
+                    , onInput (originMessage model.id << SetQuery)
+                    , onFocus (originMessage model.id OnFocusAutocom)
+                    , onBlur (originMessage model.id OnBlurAutocom)
                     , onWithOptions "keydown" options dec
                     , value fieldValue
-                    , id model.fieldId
+                    , id model.id
                     , classList
                         [ ( "autocomplete-input", True )
+                        , ( "autocomplete-open", model.showMenu )
                         ]
                     , autocomplete False
                     , attribute "aria-owns" "list-of-presidents"
@@ -324,8 +334,8 @@ view model originMessage =
 viewMenu : Model -> (String -> Msg -> msg) -> Html msg
 viewMenu model originMessage =
     -- This is the menu that appear below the input box
-    div [ class "autocomplete-menu", onMouseDown (originMessage model.fieldId PreventFocusAndBlur) ]
-        [ Html.map (originMessage model.fieldId << SetAutoState) (Autocomplete.view viewConfig model.howManyToShow model.state (acceptableItems model.fieldValue model.menuItems)) ]
+    div [ class "autocomplete-menu", onMouseDown (originMessage model.id PreventFocusAndBlur) ]
+        [ Html.map (originMessage model.id << SetAutoState) (Autocomplete.view viewConfig model.howManyToShow model.state (acceptableItems model.value model.menuItems)) ]
 
 
 viewConfig : Autocomplete.ViewConfig String
