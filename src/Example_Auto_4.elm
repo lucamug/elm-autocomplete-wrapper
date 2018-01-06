@@ -87,7 +87,7 @@ view model =
             , AutocompleteWrapper.view model.field2 OriginMessage
             , AutocompleteWrapper.view model.field3 OriginMessage
             ]
-        , footer [] [ text "made with 凸 by ", a [ href "https://github.com/lucamug" ] [ text "lucamug" ] ]
+        , lucamug
         ]
 
 
@@ -294,4 +294,18 @@ logoElm logoColor size =
         , p [ f c.c2, d "M9 0l70 70h153L162 0zm238 85l77 76-77 77-76-77z" ] []
         , p [ f c.c3, d "M323 144V0H180zm-161 27L9 323h305z" ] []
         , p [ f c.c4, d "M153 162L0 9v305z" ] []
+        ]
+
+
+
+-- MADE BY LUCAMUG
+
+
+lucamug : Html msg
+lucamug =
+    a [ class "lucamug", href "https://github.com/lucamug" ]
+        [ node "style" [] [ text """.lucamug{opacity:.4;color:#000;display:block;text-decoration:none}.lucamug:hover{opacity:.5}.lucamug:hover .lucamugSpin{transform:rotate(360deg)}.lucamugSpin{color:#3d8a9f ;display:inline-block;transition:transform .6s ease-in-out}""" ]
+        , text "made with "
+        , span [ class "lucamugSpin" ] [ text "凸" ]
+        , text " by lucamug"
         ]
