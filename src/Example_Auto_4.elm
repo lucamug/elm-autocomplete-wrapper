@@ -38,7 +38,7 @@ update msg model =
                 OriginMessage id autocomMsg ->
                     ( id, autocomMsg )
     in
-    case msg of
+    case Debug.log "msg" msg of
         OriginMessage id autocomMsg ->
             if id == model.field1.id then
                 let
@@ -70,7 +70,7 @@ view : Model -> Html Msg
 view model =
     div [ class "form-container" ]
         [ div [ style [ ( "text-align", "center" ) ] ]
-            [ logoElm LightBlue "100px" "100px"
+            [ logoElm (Monochrome LightBlue) "100px"
             , h1 [] [ text "Elm Autocomplete" ]
             , div []
                 [ a [ href "https://medium.com/@l.mugnaini/autocomplete-widget-in-elm-4927b8e275db" ] [ text "Article" ]
@@ -220,9 +220,13 @@ menuItems3 =
 -- SVG
 
 
-type LogoColor
-    = Colored
-    | Orange
+type Type
+    = Monochrome Color
+    | Colored
+
+
+type Color
+    = Orange
     | Green
     | LightBlue
     | Blue
@@ -230,27 +234,30 @@ type LogoColor
     | Black
 
 
-logoColor : LogoColor -> String
-logoColor color =
+cssRgb : Color -> String
+cssRgb color =
     case color of
         Orange ->
-            "#F0AD00"
+            "#f0ad00"
 
         Green ->
-            "#7FD13B"
+            "#7fd13b"
 
         LightBlue ->
-            "#60B5CC"
+            "#60b5cc"
 
         Blue ->
-            "#5A6378"
+            "#5a6378"
 
-        _ ->
-            "black"
+        White ->
+            "#fafafa"
+
+        Black ->
+            "#151515"
 
 
-logoElm : LogoColor -> String -> String -> Html msg
-logoElm color x y =
+logoElm : Type -> String -> Html.Html msg
+logoElm logoColor size =
     let
         f =
             Svg.Attributes.fill
@@ -261,46 +268,27 @@ logoElm color x y =
         p =
             Svg.path
 
-        orange =
-            logoColor Orange
-
-        green =
-            logoColor Green
-
-        lightBlue =
-            logoColor LightBlue
-
-        blue =
-            logoColor Blue
-
         c =
-            case color of
+            case logoColor of
                 Colored ->
-                    { c1 = orange, c2 = green, c3 = lightBlue, c4 = blue }
+                    { c1 = cssRgb Orange
+                    , c2 = cssRgb Green
+                    , c3 = cssRgb LightBlue
+                    , c4 = cssRgb Blue
+                    }
 
-                Orange ->
-                    { c1 = orange, c2 = orange, c3 = orange, c4 = orange }
-
-                Green ->
-                    { c1 = green, c2 = green, c3 = green, c4 = green }
-
-                LightBlue ->
-                    { c1 = lightBlue, c2 = lightBlue, c3 = lightBlue, c4 = lightBlue }
-
-                Blue ->
-                    { c1 = blue, c2 = blue, c3 = blue, c4 = blue }
-
-                White ->
-                    { c1 = "white", c2 = "white", c3 = "white", c4 = "white" }
-
-                Black ->
-                    { c1 = "black", c2 = "black", c3 = "black", c4 = "black" }
+                Monochrome c ->
+                    { c1 = cssRgb c
+                    , c2 = cssRgb c
+                    , c3 = cssRgb c
+                    , c4 = cssRgb c
+                    }
     in
     Svg.svg
         [ Svg.Attributes.version "1"
         , Svg.Attributes.viewBox "0 0 323 323"
-        , Svg.Attributes.width x
-        , Svg.Attributes.height y
+        , Svg.Attributes.width size
+        , Svg.Attributes.height size
         ]
         [ p [ f c.c1, d "M162 153l70-70H92zm94 94l67 67V179z" ] []
         , p [ f c.c2, d "M9 0l70 70h153L162 0zm238 85l77 76-77 77-76-77z" ] []
