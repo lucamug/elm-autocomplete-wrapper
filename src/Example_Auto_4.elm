@@ -304,7 +304,11 @@ logoElm logoColor size =
 lucamug : Html msg
 lucamug =
     a [ class "lucamug", href "https://github.com/lucamug" ]
-        [ node "style" [] [ text """.lucamug{opacity:.4;color:#000;display:block;text-decoration:none}.lucamug:hover{opacity:.5}.lucamug:hover .lucamugSpin{transform:rotate(360deg)}.lucamugSpin{color:#3d8a9f ;display:inline-block;transition:transform .6s ease-in-out}""" ]
+        [ node "style" [] [ text """
+        .lucamug{opacity:.4;color:#000;display:block;text-decoration:none}
+        .lucamug:hover{opacity:.5}
+        .lucamug:hover .lucamugSpin{transform:rotate(0deg);padding:0;position:relative;top:0;}
+        .lucamugSpin{color:red ;display:inline-block;transition:all .4s ease-in-ou; transform:rotate(60deg);padding:0 2px 0 4px;position:relative;top:-4px;}""" ]
         , text "made with "
         , span [ class "lucamugSpin" ] [ text "凸" ]
         , text " by lucamug"
